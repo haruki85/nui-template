@@ -1,0 +1,93 @@
+html, body { margin: 0; background: transparent; }  /* 背景は必ず透明にする */
+.hidden { display: none !important; }
+
+.app {
+    position: absolute; right: 2rem; bottom: 2rem;
+    width: 400px; height: min(720px, calc(100vh - 4rem));
+    display: flex; flex-direction: column;
+    overflow: hidden; border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    background: var(--bg); color: var(--base);
+    font-family: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic UI', Meiryo, sans-serif;
+    font-size: 14px; line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app, .app * { box-sizing: border-box; }
+.app ::selection { background: var(--select-bg); color: var(--select-text); }
+
+/* ドラッグでパネルを動かすつかみ（ヘッダーの上部 15px に重ねる） */
+.drag-handle {
+    position: absolute; top: 0; left: 0; right: 0; height: 15px;
+    z-index: 1; cursor: move; touch-action: none;
+}
+
+/* 大きさを変えるつまみ（パネルのふちに重ねる） */
+.resize-handle { position: absolute; z-index: 2; touch-action: none; }
+.resize-handle.e  { top: 15px; right: 0; bottom: 12px; width: 5px; cursor: ew-resize; }
+.resize-handle.w  { top: 15px; left: 0; bottom: 12px; width: 5px; cursor: ew-resize; }
+.resize-handle.s  { left: 12px; right: 12px; bottom: 0; height: 5px; cursor: ns-resize; }
+.resize-handle.se { right: 0; bottom: 0; width: 12px; height: 12px; cursor: nwse-resize; }
+.resize-handle.sw { left: 0; bottom: 0; width: 12px; height: 12px; cursor: nesw-resize; }
+.app.resizing { user-select: none; }
+
+.drag-handle::after {
+    content: ''; position: absolute; top: 5px; left: 50%;
+    width: 36px; height: 4px; margin-left: -18px; border-radius: 2px;
+    background: var(--border-strong); opacity: 0; transition: opacity .15s ease;
+}
+.drag-handle:hover::after, .app.dragging .drag-handle::after { opacity: 1; }
+.app.dragging { user-select: none; }
+
+.app.light {
+    --bg: #f8f6ff; --surface: #ffffff;
+    --line: #e9e5fb; --border: #dcd6f7; --border-strong: #c2b9f0;
+    --text: #1d1b3a; --base: #26244a; --body: #2d2b4f; --sub: #4a4766; --muted: #6b6880;
+    --accent-text: #d1206a; --accent-fill: #ff4d8d; --on-accent: #ffffff;
+    --error: #d1206a;
+
+    --ghost-hover-bg: #ece8fd; --ghost-hover-text: #1d1b3a;
+    --focus-border: #5b5bf7; --focus-ring: #5b5bf7;
+    --scroll-thumb: #d4cdf5;
+    --select-bg: #ffd23f; --select-text: #1d1b3a;
+}
+
+.app.dark {
+    --bg: #111111; --surface: #1a1a1a;
+    --line: #222222; --border: #2a2a2a; --border-strong: #3a3a3a;
+    --text: #f2f2f2; --base: #e8e8e8; --body: #d6d6d6; --sub: #a8a8a8; --muted: #8c8c8c;
+    --accent-text: #9a9a9a; --accent-fill: #ededed; --on-accent: #111111;
+    --error: #ff8a80;
+
+    --ghost-hover-bg: #1f1f1f; --ghost-hover-text: #f2f2f2;
+    --focus-border: #5c5c5c; --focus-ring: #ededed;
+    --scroll-thumb: #2c2c2c;
+    --select-bg: #ededed; --select-text: #111111;
+}
+
+.ghost {
+    background: transparent; color: var(--sub);
+    border: 0; border-radius: 6px;
+    font-family: inherit; cursor: pointer;
+}
+
+.icon-button {
+    flex: none; display: flex; align-items: center; justify-content: center;
+    width: 35px; height: 44px; padding: 0;
+}
+
+.app header {
+    flex: none; display: flex; align-items: center; gap: 2px;
+    padding: 4px;
+    border-bottom: 1px solid var(--border);
+}
+
+.theme-toggle { margin-left: auto; }
+.app.dark .icon-moon, .app.light .icon-sun { display: none; }
+
+.ghost:hover { background: var(--ghost-hover-bg); color: var(--ghost-hover-text); }
+
+/* テーマを切り替えたときに色をなめらかに変える */
+.app, .app header, .app button {
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
